@@ -41,7 +41,7 @@ class This() : Expression {
     }
 }
 
-data class Variable(var name: String) : Expression, Reference {
+data class VariableAccess(var name: String) : Expression, Reference {
     override var referenceContext: ReferenceContext? = null
     override var line: Int? = null
     override var position: Int? = null
@@ -56,7 +56,7 @@ data class Variable(var name: String) : Expression, Reference {
 data class FunctionCall(var name: String, var parameters: List<Expression>)
 
 
-data class MethodCallExpression(var caller: Expression?, var functionCall : FunctionCall) : FunctionalReference {
+data class MethodCallExpression(var caller: Expression?, var functionCall : FunctionCall) : FunctionalReference, Expression {
     override var referenceContext: FunctionalContext? = null
     override var line: Int? = null
     override var position: Int? = null
@@ -68,7 +68,7 @@ data class MethodCallExpression(var caller: Expression?, var functionCall : Func
     }
 }
 
-data class ObjectInstantiationExpression(var functionCall : FunctionCall) : FunctionalReference {
+data class ObjectInstantiationExpression(var functionCall : FunctionCall) : FunctionalReference, Expression {
     override var referenceContext: FunctionalContext? = null
     override var line: Int? = null
     override var position: Int? = null
@@ -80,7 +80,7 @@ data class ObjectInstantiationExpression(var functionCall : FunctionCall) : Func
     }
 }
 
-data class ArrayInstantiationExpression(var size: Int) : Node  {
+data class ArrayInstantiationExpression(var size: Int) : Expression  {
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null

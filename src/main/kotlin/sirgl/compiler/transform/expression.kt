@@ -27,7 +27,7 @@ fun LangParser.ExpressionContext.toAst(): Expression {
     }
 }
 
-fun LangParser.ObjectCreationExprContext.toAst(): ObjectCreationExpression {
+fun LangParser.ObjectCreationExprContext.toAst(): Expression {
     val constructorCall = objectCreationExpression().constructorCall()
     return ObjectInstantiationExpression(constructorCall.functionCall().toAst(), start.line, start.charPositionInLine)
 }
@@ -165,7 +165,7 @@ fun LangParser.PrimaryContext.toAst(): Expression {
         return IntLiteral(parseIntLiteral(IntLiteral()), line, position)
     }
     if (Identifier() != null) {
-        return Variable(Identifier().text, line, position)
+        return VariableAccess(Identifier().text, line, position)
     }
     if (THIS() != null) {
         return This(line, position)

@@ -1,5 +1,7 @@
 package sirgl.compiler.ast
 
+import sirgl.compiler.ast.context.ReferenceDeclaration
+
 data class Block(var statements: List<Statement>) : Node {
     override var line: Int? = null
     override var position: Int? = null
@@ -11,7 +13,7 @@ data class Block(var statements: List<Statement>) : Node {
     }
 }
 
-data class VariableDeclarationStatement(var type : AssignableType, var fieldName: String, var expression : Expression) : Statement {
+data class VariableDeclarationStatement(var type : AssignableType, override var referenceName: String, var expression : Expression) : ReferenceDeclaration, Expression {
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null

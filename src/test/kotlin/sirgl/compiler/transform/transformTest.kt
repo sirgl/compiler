@@ -22,29 +22,29 @@ class TransformTest {
                         ),
                         methods = listOf(
                                 MethodDefinition(MethodDeclaration(
-                                        methodName = "doX",
+                                        functionalName = "doX",
                                         paremeters = listOf(),
                                         returnType = stringType
                                 ),
                                         block = Block(listOf(
                                                 IfStatement(condition = BooleanLiteral(bool = true), block = Block(
                                                         listOf(
-                                                                AssignmentExprssion(Variable("a"), IntLiteral(23)),
-                                                                MethodCallExpression(Variable("out"), FunctionCall("println", listOf(StringLiteral("Correct"))))
+                                                                AssignmentExprssion(VariableAccess("a"), IntLiteral(23)),
+                                                                MethodCallExpression(VariableAccess("out"), FunctionCall("println", listOf(StringLiteral("Correct"))))
                                                         )
                                                 ), elseBlock = Block(
                                                         listOf(
-                                                                MethodCallExpression(Variable("out"), FunctionCall("println", listOf(StringLiteral("Impossible"))))
+                                                                MethodCallExpression(VariableAccess("out"), FunctionCall("println", listOf(StringLiteral("Impossible"))))
                                                         )
                                                 )),
                                                 WhileStatement(
                                                         condition = BooleanLiteral(true),
                                                         block = Block(
                                                                 listOf(
-                                                                        MethodCallExpression(Variable("out"), FunctionCall("println", listOf(StringLiteral("Once")))),
-                                                                        IfStatement(Variable("c"), Block(
+                                                                        MethodCallExpression(VariableAccess("out"), FunctionCall("println", listOf(StringLiteral("Once")))),
+                                                                        IfStatement(VariableAccess("c"), Block(
                                                                                 listOf(
-                                                                                        MethodCallExpression(Variable("out"), FunctionCall("print", listOf(StringLiteral("Inner block"))))
+                                                                                        MethodCallExpression(VariableAccess("out"), FunctionCall("print", listOf(StringLiteral("Inner block"))))
                                                                                 )
                                                                         ), null),
                                                                         BreakStatement()
@@ -55,14 +55,14 @@ class TransformTest {
                                 ),
                                 MethodDefinition(
                                         MethodDeclaration("doY", listOf(), VoidType), Block(listOf(
-                                        MethodCallExpression(Variable("out"), FunctionCall("println", listOf(StringLiteral("Another function"))))
+                                        MethodCallExpression(VariableAccess("out"), FunctionCall("println", listOf(StringLiteral("Another function"))))
                                 )
                                 )
                                 )
                         ),
                         constructors = listOf(
                                 ConstructorDefinition(ConstructorDeclaration("MyClass", listOf()), Block(listOf(
-                                        AssignmentExprssion(Variable("a"), IntLiteral(12)),
+                                        AssignmentExprssion(VariableAccess("a"), IntLiteral(12)),
                                         AssignmentExprssion(FieldAccessExpression(This(), "b"), IntLiteral(34)),
                                         AssignmentExprssion(FieldAccessExpression(This(), "c"), BooleanLiteral(true)),
                                         AssignmentExprssion(FieldAccessExpression(This(), "d"), CharLiteral('a')),

@@ -1,18 +1,15 @@
 package sirgl.compiler.ast.context
 
-class ClassContext {
+import sirgl.compiler.ast.Node
 
+interface ReferenceContext {
+    var declaration: ReferenceDeclaration?
 }
 
-interface ReferenceContext
-
-class VariableContext : ReferenceContext {
-
+interface ReferenceDeclaration : Node {
+    var referenceName: String
 }
 
-class FieldContext : ReferenceContext {
-
-}
 
 interface Reference {
     var referenceContext:  ReferenceContext?

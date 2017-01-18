@@ -11,4 +11,6 @@ interface FunctionalContext {
     var declaration: FunctionalDeclaration
 }
 
-interface FunctionalDeclaration : Node
+interface FunctionalDeclaration : Node {
+    var functionalName : String
+}

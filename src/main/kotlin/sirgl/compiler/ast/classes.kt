@@ -1,6 +1,7 @@
 package sirgl.compiler.ast
 
 import sirgl.compiler.ast.context.FunctionalDeclaration
+import sirgl.compiler.ast.context.ReferenceDeclaration
 
 data class ClassDefinition(
         var className: String,
@@ -35,7 +36,7 @@ data class SuperClause(var className: String) : Node {
     }
 }
 
-data class Parameter(var name: String, var type: AssignableType) : Node {
+data class Parameter(override var referenceName: String, var type: AssignableType) : ReferenceDeclaration {
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
@@ -46,7 +47,7 @@ data class Parameter(var name: String, var type: AssignableType) : Node {
     }
 }
 
-data class MethodDeclaration(var methodName: String, var paremeters: List<Parameter>, var returnType: ReturnType) : Node, FunctionalDeclaration {
+data class MethodDeclaration(override var functionalName: String, var paremeters: List<Parameter>, var returnType: ReturnType) : Node, FunctionalDeclaration {
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
@@ -69,7 +70,7 @@ data class MethodDefinition(var methodDeclaration: MethodDeclaration, var block:
 }
 
 
-data class ConstructorDeclaration(var constructorName: String, var paremeters: List<Parameter>) : Node, FunctionalDeclaration {
+data class ConstructorDeclaration(override var functionalName: String, var paremeters: List<Parameter>) : Node, FunctionalDeclaration {
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
@@ -91,7 +92,7 @@ data class ConstructorDefinition(var constructorDeclaration: ConstructorDeclarat
     }
 }
 
-data class FieldDeclaration(var fieldName: String, var type: AssignableType) : Node {
+data class FieldDeclaration(override var referenceName: String, var type: AssignableType) : ReferenceDeclaration {
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
