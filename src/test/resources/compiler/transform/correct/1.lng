@@ -1,0 +1,38 @@
+package my.test.hello;
+
+class MyClass {
+    int a;
+    int b;
+    boolean c;
+    char d;
+    Out out;
+
+    MyClass() {
+        a = 12;
+        this.b = 34;
+        this.c = true;
+        this.d = 'a';
+        this.out = new Out();
+    }
+
+    String doX() {
+
+        if(true) {
+            a = 23;
+            out.println("Correct");
+        } else {
+            out.println("Impossible");
+        }
+        while(true) {
+            out.println("Once");
+            if(c) {
+                out.print("Inner block");
+            }
+            break;
+        }
+    }
+
+    void doY() {
+        out.println("Another function");
+    }
+}
