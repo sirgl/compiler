@@ -22,6 +22,7 @@ fun LangParser.BlockStatementContext.toAst(): Statement {
         is LangParser.SuperConstructorCallContext -> child.toStatementAst()
         is LangParser.IfStatementContext -> child.toStatementAst()
         is LangParser.WhileStatementContext -> child.toStatementAst()
+        is LangParser.ForStatementContext -> child.toStatementAst()
         else -> throw ParserException("Can't convert statement to AST $javaClass")
     }
 }

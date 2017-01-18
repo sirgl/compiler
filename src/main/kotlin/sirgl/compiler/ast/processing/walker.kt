@@ -1,6 +1,7 @@
 package sirgl.compiler.ast.processing
 
 import sirgl.compiler.ast.Node
+import sirgl.compiler.util.getAllSuperclasses
 import kotlin.reflect.memberProperties
 
 @Suppress("UNCHECKED_CAST")
@@ -37,13 +38,16 @@ open class TreeWalker {
     }
 
     private fun acceptListeners(node: Node, listenersMap: MutableMap<Class<*>, MutableList<(Node) -> Unit>>) {
-        val listeners = listenersMap[node.javaClass]
-        listeners?.forEach {
-            it(node)
+        val classes = getAllSuperclasses(node.javaClass)
+        classes.forEach {
+            val listeners = listenersMap[it]
+            listeners?.forEach {
+                it(node)
+            }
         }
     }
 
-    private fun <T : Node> addListeners(
+    private fun <T> addListeners(
             map: MutableMap<Class<*>, MutableList<(Node) -> Unit>>,
             nodeClass: Class<T>,
             action: (T) -> Unit) {
@@ -55,15 +59,15 @@ open class TreeWalker {
         map[nodeClass] = actionList
     }
 
-    fun <T : Node> addNodeEntranceListener(nodeClass: Class<T>, action: (T) -> Unit) {
+    fun <T> addNodeEntranceListener(nodeClass: Class<T>, action: (T) -> Unit) {
         addListeners(nodeEntranceListeners, nodeClass, action)
     }
 
-    fun <T : Node> addSubtreeTraverseStartListener(nodeClass: Class<T>, action: (T) -> Unit) {
+    fun <T> addSubtreeTraverseStartListener(nodeClass: Class<T>, action: (T) -> Unit) {
         addListeners(nodeSubtreeTraverseStartListeners, nodeClass, action)
     }
 
-    fun <T : Node> addSubtreeTraverseEndListener(nodeClass: Class<T>, action: (T) -> Unit) {
+    fun <T> addSubtreeTraverseEndListener(nodeClass: Class<T>, action: (T) -> Unit) {
         addListeners(nodeSubtreeTraverseEndListeners, nodeClass, action)
     }
 

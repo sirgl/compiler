@@ -14,17 +14,17 @@ class TransformTest {
                 ClassDefinition(
                         "MyClass",
                         fields = listOf(
-                                FieldDeclaration("a", IntegerType),
-                                FieldDeclaration("b", IntegerType),
-                                FieldDeclaration("c", BooleanType),
-                                FieldDeclaration("d", CharType),
+                                FieldDeclaration("a", IntegerType()),
+                                FieldDeclaration("b", IntegerType()),
+                                FieldDeclaration("c", BooleanType()),
+                                FieldDeclaration("d", CharType()),
                                 FieldDeclaration("out", ObjectType("Out", null))
                         ),
                         methods = listOf(
                                 MethodDefinition(MethodDeclaration(
                                         functionalName = "doX",
                                         paremeters = listOf(),
-                                        returnType = stringType
+                                        returnType = ObjectType("String", null)
                                 ),
                                         block = Block(listOf(
                                                 IfStatement(condition = BooleanLiteral(bool = true), block = Block(
@@ -54,7 +54,7 @@ class TransformTest {
                                         ))
                                 ),
                                 MethodDefinition(
-                                        MethodDeclaration("doY", listOf(), VoidType), Block(listOf(
+                                        MethodDeclaration("doY", listOf(), VoidType()), Block(listOf(
                                         MethodCallExpression(VariableAccess("out"), FunctionCall("println", listOf(StringLiteral("Another function"))))
                                 )
                                 )

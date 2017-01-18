@@ -11,6 +11,7 @@ interface ReferenceDeclaration : Node {
 }
 
 
-interface Reference {
+interface Reference : Node {
     var referenceContext:  ReferenceContext?
+    var referenceName: String
 }

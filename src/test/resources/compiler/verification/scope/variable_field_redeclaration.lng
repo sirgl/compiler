@@ -1,0 +1,9 @@
+package my.test.hello;
+
+class MyClass {
+    int a;
+
+    String doX() {
+        int a = 12;
+    }
+}

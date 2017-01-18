@@ -41,7 +41,7 @@ class This() : Expression {
     }
 }
 
-data class VariableAccess(var name: String) : Expression, Reference {
+data class VariableAccess(override var referenceName: String) : Expression, Reference {
     override var referenceContext: ReferenceContext? = null
     override var line: Int? = null
     override var position: Int? = null
@@ -91,7 +91,7 @@ data class ArrayInstantiationExpression(var size: Int) : Expression  {
     }
 }
 
-data class FieldAccessExpression(var caller: Expression?, var fieldName: String) : Expression, Reference {
+data class FieldAccessExpression(var caller: Expression?, override var referenceName: String) : Expression, Reference {
     override var referenceContext: ReferenceContext? = null
     override var line: Int? = null
     override var position: Int? = null

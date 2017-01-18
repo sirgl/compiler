@@ -2,13 +2,16 @@ package sirgl.compiler.ast
 
 import sirgl.compiler.ast.context.FunctionalDeclaration
 import sirgl.compiler.ast.context.ReferenceDeclaration
+import sirgl.compiler.verification.scope.Scope
+import sirgl.compiler.verification.scope.Scoped
 
 data class ClassDefinition(
         var className: String,
         var fields: List<FieldDeclaration>,
         var methods: List<MethodDefinition>,
         var constructors: List<ConstructorDefinition>,
-        var superClass: String?) : Node {
+        var superClass: String?) : Node, Scoped {
+    override var scope: Scope = Scope()
     override var parent: Node? = null
     override var line: Int? = null
     override var position: Int? = null
@@ -47,7 +50,8 @@ data class Parameter(override var referenceName: String, var type: AssignableTyp
     }
 }
 
-data class MethodDeclaration(override var functionalName: String, var paremeters: List<Parameter>, var returnType: ReturnType) : Node, FunctionalDeclaration {
+
+data class MethodDeclaration(override var functionalName: String, override var paremeters: List<Parameter>, override var returnType: ReturnType?) : Node, FunctionalDeclaration {
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
@@ -70,7 +74,8 @@ data class MethodDefinition(var methodDeclaration: MethodDeclaration, var block:
 }
 
 
-data class ConstructorDeclaration(override var functionalName: String, var paremeters: List<Parameter>) : Node, FunctionalDeclaration {
+data class ConstructorDeclaration(override var functionalName: String, override var paremeters: List<Parameter>) : Node, FunctionalDeclaration {
+    override var returnType: ReturnType? = null
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null

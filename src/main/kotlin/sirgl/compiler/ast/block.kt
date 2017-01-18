@@ -1,16 +1,37 @@
 package sirgl.compiler.ast
 
 import sirgl.compiler.ast.context.ReferenceDeclaration
+import sirgl.compiler.verification.scope.Scope
+import sirgl.compiler.verification.scope.Scoped
 
-data class Block(var statements: List<Statement>) : Node {
+data class Block(var statements: List<Statement>) : Node, Scoped {
+    override var scope: Scope = Scope()
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+
+    var _scopeInited = false
+    var scopeInited: Boolean
+        get() = _scopeInited
+        private set(value) {
+            _scopeInited = value
+        }
 
     constructor(statements: List<Statement>, line : Int, position : Int) : this(statements) {
         this.line = line
         this.position = position
     }
+
+    fun initScope() {
+        if(scopeInited) {
+            return
+        }
+        val parentScope = findUpperScoped()?.scope
+        scope.parentScope = parentScope
+        scopeInited = true
+    }
+
+    fun findUpperScoped() = findUpper(Scoped::class.java)
 }
 
 data class VariableDeclarationStatement(var type : AssignableType, override var referenceName: String, var expression : Expression) : ReferenceDeclaration, Expression {

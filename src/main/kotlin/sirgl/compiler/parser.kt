@@ -6,8 +6,8 @@ import sirgl.compiler.ast.ClassDefinition
 import sirgl.compiler.ast.CompilationUnit
 import java.io.ByteArrayInputStream
 import java.io.InputStream
-import LangLexer;
-import LangParser;
+import LangLexer
+import LangParser
 import sirgl.compiler.ast.Node
 import sirgl.compiler.ast.processing.TreeWalker
 import sirgl.compiler.transform.toAst
@@ -48,3 +48,4 @@ fun setParents(node: Node) {
     })
     walker.walk(node)
 }
+
