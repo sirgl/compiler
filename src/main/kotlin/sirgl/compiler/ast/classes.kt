@@ -7,22 +7,25 @@ import sirgl.compiler.verification.scope.Scoped
 
 data class ClassDefinition(
         var className: String,
-        var fields: List<FieldDeclaration>,
-        var methods: List<MethodDefinition>,
-        var constructors: List<ConstructorDefinition>,
-        var superClass: String?) : Node, Scoped {
+        var fields: List<FieldDeclaration> = emptyList(),
+        var methods: List<MethodDefinition> = emptyList(),
+        var constructors: List<ConstructorDefinition> = emptyList(),
+        var nativeMethodDeclarations : List<NativeMethodDeclaration> = emptyList(),
+        var superClass: String? = null
+) : Node, Scoped {
     override var scope: Scope = Scope()
     override var parent: Node? = null
     override var line: Int? = null
     override var position: Int? = null
 
     constructor(className: String,
-                fields: List<FieldDeclaration>,
-                methods: List<MethodDefinition>,
-                constructors: List<ConstructorDefinition>,
-                superClass: String?,
+                fields: List<FieldDeclaration> = emptyList(),
+                methods: List<MethodDefinition> = emptyList(),
+                constructors: List<ConstructorDefinition> = emptyList(),
+                nativeMethodDeclarations : List<NativeMethodDeclaration> = emptyList(),
+                superClass: String? = null,
                 line: Int,
-                position: Int) : this(className, fields, methods, constructors, superClass) {
+                position: Int) : this(className, fields, methods, constructors, nativeMethodDeclarations, superClass) {
         this.line = line
         this.position = position
     }
@@ -51,7 +54,7 @@ data class Parameter(override var referenceName: String, var type: AssignableTyp
 }
 
 
-data class MethodDeclaration(override var functionalName: String, override var paremeters: List<Parameter>, override var returnType: ReturnType?) : Node, FunctionalDeclaration {
+data class MethodDeclaration(override var functionalName: String, override var parameters: List<Parameter>, override var returnType: ReturnType?) : Node, FunctionalDeclaration {
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
@@ -74,7 +77,7 @@ data class MethodDefinition(var methodDeclaration: MethodDeclaration, var block:
 }
 
 
-data class ConstructorDeclaration(override var functionalName: String, override var paremeters: List<Parameter>) : Node, FunctionalDeclaration {
+data class ConstructorDeclaration(override var functionalName: String, override var parameters: List<Parameter>) : Node, FunctionalDeclaration {
     override var returnType: ReturnType? = null
     override var line: Int? = null
     override var position: Int? = null

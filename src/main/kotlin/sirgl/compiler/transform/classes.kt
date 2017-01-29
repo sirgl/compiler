@@ -3,6 +3,7 @@ package sirgl.compiler.transform
 import org.antlr.v4.runtime.tree.ParseTree
 import sirgl.compiler.ParserException
 import sirgl.compiler.ast.*
+import java.awt.font.LayoutPath
 
 
 fun LangParser.ClassDefinitionContext.toAst(): ClassDefinition {
@@ -21,7 +22,7 @@ fun LangParser.ClassDefinitionContext.toAst(): ClassDefinition {
         }
     }
     val superClass = superClassClause()?.Identifier()?.text
-    return ClassDefinition(Identifier().text, fields, methods, constructors, superClass, start.line, start.charPositionInLine)
+    return ClassDefinition(Identifier().text, fields, methods, constructors, nativeMethods, superClass, start.line, start.charPositionInLine)
 }
 
 fun LangParser.FieldDeclarationContext.toAst(): FieldDeclaration {

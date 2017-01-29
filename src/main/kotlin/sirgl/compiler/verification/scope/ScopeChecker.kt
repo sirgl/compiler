@@ -52,7 +52,7 @@ class ScopeChecker(val compilationUnit: CompilationUnit) {
     }
 
     private fun addParametersToScope(functionalDeclaration: FunctionalDeclaration, scope: Scope) {
-        functionalDeclaration.paremeters.forEach { scope.tryAddReferenceDeclaration(it) }
+        functionalDeclaration.parameters.forEach { scope.tryAddReferenceDeclaration(it) }
     }
 
     private fun injectFieldsToScope(classDefinition: ClassDefinition) {

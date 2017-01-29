@@ -15,6 +15,6 @@ interface FunctionalContext {
 
 interface FunctionalDeclaration : Node {
     var functionalName : String
-    var paremeters: List<Parameter>
+    var parameters: List<Parameter>
     var returnType: ReturnType?
 }

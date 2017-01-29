@@ -17,4 +17,4 @@ fun LangParser.PackageDeclarationContext.toAst(): PackageDeclaration {
     return PackageDeclaration(qualifiedName().toAst(), start.line, start.charPositionInLine)
 }
 
-fun LangParser.QualifiedNameContext.toAst() = Identifier().map { s -> s.text }.reduceRight { s1, s2 -> "$s1.$s2" }
+fun LangParser.QualifiedNameContext.toAst() = Identifier().map { s -> s.text }.reduceRight { s1, s2 -> "$s1.$s2" } ?: ""

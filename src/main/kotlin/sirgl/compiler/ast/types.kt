@@ -107,6 +107,7 @@ data class ObjectType(val className: String, var packageName: String?) : BaseObj
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    var fullName : String? = null
 
     constructor(className:String, packageName : String?, line: Int, position: Int) : this(className, packageName) {
         this.line = line

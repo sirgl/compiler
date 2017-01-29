@@ -12,7 +12,8 @@ class TransformTest {
         val ast = parseCompilationUnit("compiler/transform/correct/1.lng")
         val compilationUnit = CompilationUnit(
                 ClassDefinition(
-                        "MyClass",
+                        nativeMethodDeclarations = emptyList(),
+                        className = "MyClass",
                         fields = listOf(
                                 FieldDeclaration("a", IntegerType()),
                                 FieldDeclaration("b", IntegerType()),
@@ -23,7 +24,7 @@ class TransformTest {
                         methods = listOf(
                                 MethodDefinition(MethodDeclaration(
                                         functionalName = "doX",
-                                        paremeters = listOf(),
+                                        parameters = listOf(),
                                         returnType = ObjectType("String", null)
                                 ),
                                         block = Block(listOf(
