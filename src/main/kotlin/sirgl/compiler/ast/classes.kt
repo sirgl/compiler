@@ -18,6 +18,15 @@ data class ClassDefinition(
     override var line: Int? = null
     override var position: Int? = null
 
+    val allFunctionalDeclarations : List<FunctionalDeclaration>
+    get() {
+        val functionalDeclarations = mutableListOf<FunctionalDeclaration>().let {
+            methods.mapTo(it) { it.methodDeclaration }
+            nativeMethodDeclarations.mapTo(it) { it.methodDeclaration }
+            constructors.mapTo(it) { it.constructorDeclaration } }
+        return functionalDeclarations
+    }
+
     constructor(className: String,
                 fields: List<FieldDeclaration> = emptyList(),
                 methods: List<MethodDefinition> = emptyList(),
@@ -28,6 +37,10 @@ data class ClassDefinition(
                 position: Int) : this(className, fields, methods, constructors, nativeMethodDeclarations, superClass) {
         this.line = line
         this.position = position
+    }
+
+    fun getType() : ObjectType {
+        return ObjectType(className, findCompilationUnit()?.packageDeclaration?.fullName)
     }
 }
 
@@ -42,7 +55,7 @@ data class SuperClause(var className: String) : Node {
     }
 }
 
-data class Parameter(override var referenceName: String, var type: AssignableType) : ReferenceDeclaration {
+data class Parameter(override var referenceName: String, override var type: AssignableType) : ReferenceDeclaration {
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
@@ -100,7 +113,7 @@ data class ConstructorDefinition(var constructorDeclaration: ConstructorDeclarat
     }
 }
 
-data class FieldDeclaration(override var referenceName: String, var type: AssignableType) : ReferenceDeclaration {
+data class FieldDeclaration(override var referenceName: String, override var type: AssignableType) : ReferenceDeclaration {
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null

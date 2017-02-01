@@ -34,10 +34,11 @@ data class Block(var statements: List<Statement>) : Node, Scoped {
     fun findUpperScoped() = findUpper(Scoped::class.java)
 }
 
-data class VariableDeclarationStatement(var type : AssignableType, override var referenceName: String, var expression : Expression) : ReferenceDeclaration, Expression {
+data class VariableDeclarationStatement(override var type : AssignableType, override var referenceName: String, var expression : Expression) : ReferenceDeclaration, Statement {
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+
 
     constructor(type : AssignableType, fieldName: String, expression : Expression, line : Int, position : Int) : this(type, fieldName, expression) {
         this.line = line

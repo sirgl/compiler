@@ -46,6 +46,8 @@ interface Node : SourcePosition {
 
     fun findClassDefinition()  = findUpper(ClassDefinition::class.java)
 
+    fun findCompilationUnit()  = findUpper(CompilationUnit::class.java)
+
     fun findUpperBlock(): Block? {
         return findUpper(Block::class.java, ConstructorDefinition::class.java)
     }

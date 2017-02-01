@@ -4,8 +4,9 @@ import sirgl.compiler.ast.context.FunctionalContext
 import sirgl.compiler.ast.context.FunctionalReference
 import sirgl.compiler.ast.context.Reference
 import sirgl.compiler.ast.context.ReferenceContext
+import sirgl.compiler.verification.inference.Typed
 
-interface Expression : Statement
+interface Expression : Statement, Typed
 
 interface BinaryExpression  : Expression {
     var left: Expression
@@ -21,11 +22,16 @@ interface PredicateExpression : Expression
 interface BinaryPredicateExpression : BinaryExpression, PredicateExpression
 interface UnaryPredicateExpression : UnaryExpression, PredicateExpression
 
+interface HasCaller {
+    var caller: Expression?
+}
+
 
 class This() : Expression {
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
 
     constructor(line: Int, position : Int) : this() {
         this.line = line
@@ -46,6 +52,8 @@ data class VariableAccess(override var referenceName: String) : Expression, Refe
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
+
 
     constructor(name: String, line: Int, position : Int) : this(name) {
         this.line = line
@@ -56,11 +64,13 @@ data class VariableAccess(override var referenceName: String) : Expression, Refe
 data class FunctionCall(var name: String, var parameters: List<Expression>)
 
 
-data class MethodCallExpression(var caller: Expression?, var functionCall : FunctionCall) : FunctionalReference, Expression {
+data class MethodCallExpression(override var caller: Expression?, override var functionCall : FunctionCall) : FunctionalReference, Expression, HasCaller {
     override var referenceContext: FunctionalContext? = null
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
+
 
     constructor(caller: Expression?, functionCall : FunctionCall, line: Int, position : Int) : this(caller, functionCall) {
         this.line = line
@@ -68,11 +78,13 @@ data class MethodCallExpression(var caller: Expression?, var functionCall : Func
     }
 }
 
-data class ObjectInstantiationExpression(var functionCall : FunctionCall) : FunctionalReference, Expression {
+data class ObjectInstantiationExpression(override var functionCall : FunctionCall) : FunctionalReference, Expression {
     override var referenceContext: FunctionalContext? = null
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
+
 
     constructor(functionCall : FunctionCall, line: Int, position : Int) : this(functionCall) {
         this.line = line
@@ -80,22 +92,26 @@ data class ObjectInstantiationExpression(var functionCall : FunctionCall) : Func
     }
 }
 
-data class ArrayInstantiationExpression(var size: Int) : Expression  {
+data class ArrayInstantiationExpression(var size: Int, var type: AssignableType, val level: Int) : Expression  {
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
 
-    constructor(size : Int, line: Int, position : Int) : this(size) {
+
+    constructor(size : Int, type : AssignableType, level : Int, line: Int, position : Int) : this(size, type, level) {
         this.line = line
         this.position = position
     }
 }
 
-data class FieldAccessExpression(var caller: Expression?, override var referenceName: String) : Expression, Reference {
+data class FieldAccessExpression(override var caller: Expression?, override var referenceName: String) : Expression, Reference, HasCaller {
     override var referenceContext: ReferenceContext? = null
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
+
 
     constructor(caller: Expression?, fieldName: String, line: Int, position : Int) : this(caller, fieldName) {
         this.line = line
@@ -111,6 +127,8 @@ data class DivideExpression(override var left: Expression, override var right: E
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
+
 
     constructor(left:Expression, right : Expression, line: Int, position: Int) : this(left, right) {
         this.line = line
@@ -122,6 +140,8 @@ data class MultiplyExpression(override var left: Expression, override var right:
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
+
 
     constructor(left:Expression, right : Expression, line: Int, position: Int) : this(left, right) {
         this.line = line
@@ -133,6 +153,8 @@ data class SumExpression(override var left: Expression, override var right: Expr
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
+
 
     constructor(left:Expression, right : Expression, line: Int, position: Int) : this(left, right) {
         this.line = line
@@ -144,6 +166,8 @@ data class SubtractExpression(override var left: Expression, override var right:
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
+
 
     constructor(left:Expression, right : Expression, line: Int, position: Int) : this(left, right) {
         this.line = line
@@ -155,6 +179,8 @@ data class RemainderExpression(override var left: Expression, override var right
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
+
 
     constructor(left:Expression, right : Expression, line: Int, position: Int) : this(left, right) {
         this.line = line
@@ -166,6 +192,8 @@ data class UnaryMinusExpression(override var expr: Expression) : UnaryArithmetic
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
+
 
     constructor(expr : Expression, line : Int, position : Int) : this(expr) {
         this.line = line
@@ -177,6 +205,8 @@ data class NegateExpression(override var expr: Expression) : UnaryPredicateExpre
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
+
 
     constructor(expr : Expression, line : Int, position : Int) : this(expr) {
         this.line = line
@@ -184,10 +214,14 @@ data class NegateExpression(override var expr: Expression) : UnaryPredicateExpre
     }
 }
 
-data class GreaterThanExpression(override var left: Expression, override var right: Expression) : BinaryPredicateExpression {
+interface ComparsionExpression : BinaryPredicateExpression
+
+data class GreaterThanExpression(override var left: Expression, override var right: Expression) : BinaryPredicateExpression, ComparsionExpression {
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
+
 
     constructor(left:Expression, right : Expression, line: Int, position: Int) : this(left, right) {
         this.line = line
@@ -196,10 +230,12 @@ data class GreaterThanExpression(override var left: Expression, override var rig
 }
 
 
-data class GreaterThanOrEqualsExpression(override var left: Expression, override var right: Expression) : BinaryPredicateExpression {
+data class GreaterThanOrEqualsExpression(override var left: Expression, override var right: Expression) : BinaryPredicateExpression, ComparsionExpression {
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
+
 
     constructor(left:Expression, right : Expression, line: Int, position: Int) : this(left, right) {
         this.line = line
@@ -207,10 +243,12 @@ data class GreaterThanOrEqualsExpression(override var left: Expression, override
     }
 }
 
-data class LessThanExpression(override var left: Expression, override var right: Expression) : BinaryPredicateExpression {
+data class LessThanExpression(override var left: Expression, override var right: Expression) : BinaryPredicateExpression, ComparsionExpression {
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
+
 
     constructor(left:Expression, right : Expression, line: Int, position: Int) : this(left, right) {
         this.line = line
@@ -219,10 +257,12 @@ data class LessThanExpression(override var left: Expression, override var right:
 }
 
 
-data class LessThanOrEqualsExpression(override var left: Expression, override var right: Expression) : BinaryPredicateExpression {
+data class LessThanOrEqualsExpression(override var left: Expression, override var right: Expression) : BinaryPredicateExpression, ComparsionExpression {
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
+
 
     constructor(left:Expression, right : Expression, line: Int, position: Int) : this(left, right) {
         this.line = line
@@ -234,6 +274,8 @@ data class AndExpression(override var left: Expression, override var right: Expr
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
+
 
     constructor(left:Expression, right : Expression, line: Int, position: Int) : this(left, right) {
         this.line = line
@@ -245,6 +287,8 @@ data class OrExpression(override var left: Expression, override var right: Expre
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
+
 
     constructor(left:Expression, right : Expression, line: Int, position: Int) : this(left, right) {
         this.line = line
@@ -252,10 +296,13 @@ data class OrExpression(override var left: Expression, override var right: Expre
     }
 }
 
-data class EqullityExpression(override var left: Expression, override var right: Expression) : BinaryArithmeticExpression {
+data class EqullityExpression(override var left: Expression, override var right: Expression) : BinaryPredicateExpression {
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
+
+
 
     constructor(left:Expression, right : Expression, line: Int, position: Int) : this(left, right) {
         this.line = line
@@ -263,12 +310,14 @@ data class EqullityExpression(override var left: Expression, override var right:
     }
 }
 
-data class ArrayElementAccessExpression(var arrayExpr: Expression, var index: Expression) : Expression {
+data class ArrayElementAccessExpression(override var caller: Expression?, var index: Expression) : Expression, HasCaller {
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
 
-    constructor(arrayExpr : Expression, index : Expression, line : Int, position : Int) : this(arrayExpr, index) {
+
+    constructor(caller : Expression?, index : Expression, line : Int, position : Int) : this(caller, index) {
          this.line = line
         this.position = position
     }
@@ -278,6 +327,8 @@ data class AssignmentExprssion(var reference : Reference, var expr : Expression)
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
+
 
     constructor(reference : Reference, expr : Expression, line : Int, position : Int) : this(reference, expr) {
         this.line = line
@@ -289,6 +340,8 @@ data class ClassCastExpression(var className: String, var expr : Expression) : E
     override var line: Int? = null
     override var position: Int? = null
     override var parent: Node? = null
+    override var inferredType: Type? = null
+
 
     constructor(className : String, expr : Expression, line : Int, position : Int) : this(className, expr) {
         this.line = line

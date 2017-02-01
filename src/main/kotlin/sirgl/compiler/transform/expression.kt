@@ -149,7 +149,7 @@ fun LangParser.TypeConversionContext.toAst() = ClassCastExpression(
 )
 
 fun LangParser.ArrayCreationContext.toExprAst() : ArrayInstantiationExpression {
-    return ArrayInstantiationExpression(parseIntLiteral(IntLiteral()))
+    return ArrayInstantiationExpression(parseIntLiteral(IntLiteral()), assignableType().toAst(), arrayWrapper().size)
 }
 
 fun LangParser.PrimaryContext.toAst(): Expression {

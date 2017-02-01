@@ -115,7 +115,7 @@ expressionList :   expression (',' expression)* ;
 
 functionCall : Identifier '(' expressionList? ')';
 
-arrayCreation : Identifier ('['']')* '(' IntLiteral ')';
+arrayCreation : assignableType arrayWrapper* '(' IntLiteral ')';
 
 constructorCall : 'new' functionCall;
 

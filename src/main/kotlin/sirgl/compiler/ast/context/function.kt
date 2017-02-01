@@ -1,5 +1,6 @@
 package sirgl.compiler.ast.context
 
+import sirgl.compiler.ast.FunctionCall
 import sirgl.compiler.ast.Node
 import sirgl.compiler.ast.Parameter
 import sirgl.compiler.ast.ReturnType
@@ -7,6 +8,7 @@ import sirgl.compiler.ast.ReturnType
 
 interface FunctionalReference : Node {
     var referenceContext: FunctionalContext?
+    var functionCall: FunctionCall
 }
 
 interface FunctionalContext {

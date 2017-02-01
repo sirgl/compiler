@@ -1,6 +1,7 @@
 package sirgl.compiler.verification.scope
 
 import sirgl.compiler.ast.context.Reference
+import sirgl.compiler.ast.context.ReferenceContextImpl
 import sirgl.compiler.ast.context.ReferenceDeclaration
 
 class ScopeCheckSession(val scope: Scope) {
@@ -11,6 +12,8 @@ class ScopeCheckSession(val scope: Scope) {
         if (!scope.containsReference(reference)) {
             errors.add(UndefinedVariableUsageError(reference))
         }
+        val declaration = scope.findDeclaration(reference.referenceName)
+        reference.referenceContext = ReferenceContextImpl(declaration)
     }
 
     fun add(referenceDeclaration: ReferenceDeclaration) {

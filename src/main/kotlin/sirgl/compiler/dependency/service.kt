@@ -1,12 +1,14 @@
 package sirgl.compiler.dependency
 
 import sirgl.compiler.ast.CompilationUnit
+import sirgl.compiler.ast.Type
+import sirgl.compiler.ast.context.FunctionalContext
 import sirgl.compiler.verification.scope.VerificationError
 
 class DependencyService(userSrc: List<CompilationUnit>, stdLib : List<CompilationUnit>) {
-    val roots : List<DependencyNode>
+    private val roots : List<DependencyNode>
     val errors = mutableListOf<VerificationError>()
-    val nameToNode = mutableMapOf<String, DependencyNode>()
+    private val nameToNode = mutableMapOf<String, DependencyNode>()
 
     init {
         val builder = DependencyGraphBuilder(userSrc, stdLib)
@@ -31,4 +33,9 @@ class DependencyService(userSrc: List<CompilationUnit>, stdLib : List<Compilatio
 
     fun findAllSuperclasses(fullName: String) = findNode(fullName)?.superclasses
                 ?.toList()
+
+
+
 }
+
+class CallSiteSignature(val className: String, val methodName: String, val types: List<Type>)
